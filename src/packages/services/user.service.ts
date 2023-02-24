@@ -15,8 +15,8 @@ export class UserService {
     private userDataModel: mongoose.Model<UserDocument>,
   ) {}
 
-  async getUsers() {
-    return await this.userDataModel.find({});
+  async getUser(userId) {
+    return await this.userDataModel.findOne({userId});
   }
 
   async emailSignUp(emailSignUpRequest: {

@@ -36,9 +36,9 @@ export class SessionService {
 
   public static signJWT<T>(
     payload: any | T,
-
     secretToken: string,
   ): string {
     return jwt.sign(payload, secretToken);
   }
+
 }

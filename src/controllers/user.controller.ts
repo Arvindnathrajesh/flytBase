@@ -13,6 +13,8 @@ import { SessionService } from 'src/packages/services/session.service';
 import { UserService } from 'src/packages/services/user.service';
 import { EmailLogin, UserToken } from 'src/packages/types/dtos/user';
 import * as _ from 'lodash';
+import { User } from 'src/decorators/user.decorator';
+import { AuthGuard } from 'src/guard/auth.guard';
   
   @Controller({ path: '/user' })
   export class UserController {
@@ -23,9 +25,12 @@ import * as _ from 'lodash';
       private sessionService: SessionService,
     ) {}
   
+    @UseGuards(AuthGuard)
     @Get('')
-    public async getUsers() {
-      return await this.userService.getUsers();
+    public async getUsers(
+    @User('userId') userId: number,
+    ) {
+      return await this.userService.getUser(userId);
     }
 
     @Post('/email/sign-up')
