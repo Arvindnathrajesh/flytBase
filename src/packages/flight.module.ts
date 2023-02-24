@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { CategoryCollection, CategorySchema } from './models/schemas/category.schema';
 import { DroneCollection, DroneSchema } from './models/schemas/drone.schema';
 import {
   MissionCollection,
@@ -31,6 +32,11 @@ import { UserService } from './services/user.service';
         name: 'DroneModel',
         schema: DroneSchema,
         collection: DroneCollection,
+      },
+      {
+        name: 'CategoryModel',
+        schema: CategorySchema,
+        collection: CategoryCollection,
       },
     ]),
   ],
