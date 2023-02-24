@@ -13,7 +13,7 @@ import { SessionPayload, UserRequest } from 'src/packages/types/dtos/user';
 export class AuthGuard implements CanActivate {
   constructor(
     @Inject('SessionService')
-    private sessionService: SessionService, //   @Inject('Cls') private cls: Cls,
+    private sessionService: SessionService,
   ) {}
 
   canActivate(

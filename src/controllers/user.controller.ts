@@ -42,13 +42,13 @@ export class UserController {
   }
 
   @Post('/email/log-in')
-  public async emailLogin(@Body() emailLogin: EmailLogin): Promise<UserToken> {
+  public async emailLogin(@Body() emailLogin: EmailLogin) {
     const userData = await this.userService.emailLogin(emailLogin);
     const token = await this.sessionService.createJwtSession({
       user: { userId: userData.userId },
     });
     return {
-      userId: userData.userId,
+      user: userData,
       token: token,
       emailLoginMethod: !_.isEmpty(userData.hashedPassword),
     };

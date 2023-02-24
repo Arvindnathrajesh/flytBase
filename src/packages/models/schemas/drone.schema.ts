@@ -11,6 +11,9 @@ export const DroneSchema = new Schema(
     siteId: {
       type: String,
     },
+    userId: {
+      type: Number,
+    },
     deletedBy: {
       type: Number,
     },

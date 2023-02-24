@@ -5,6 +5,9 @@ import { AppService } from './app.service';
 import { FlightModule } from './packages/flight.module';
 import { MissionV1Controller } from './controllers/mission.controller';
 import { UserController } from './controllers/user.controller';
+import { InternalController } from './controllers/internal.controller';
+import { SiteController } from './controllers/site.controller';
+import { DroneController } from './controllers/drone.controller';
 
 @Module({
   imports: [
@@ -13,7 +16,14 @@ import { UserController } from './controllers/user.controller';
     ),
     FlightModule,
   ],
-  controllers: [AppController, MissionV1Controller, UserController],
+  controllers: [
+    AppController,
+    MissionV1Controller,
+    UserController,
+    InternalController,
+    SiteController,
+    DroneController,
+  ],
   providers: [AppService],
 })
 export class AppModule {}

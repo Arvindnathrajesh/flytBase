@@ -32,9 +32,9 @@ export const MissionSchema = new Schema(
       },
     ],
 
-    droneId: {
-      type: String,
-    },
+    // droneId: {
+    //   type: String,
+    // },
     siteId: {
       type: String,
     },

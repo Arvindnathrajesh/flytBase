@@ -11,6 +11,7 @@ import {
 } from './models/schemas/mission.schema';
 import { SiteCollection, SiteSchema } from './models/schemas/site.schema';
 import { UserDataCollection, UserSchema } from './models/schemas/user.schema';
+import { CategoryService } from './services/category.service';
 import { DroneService } from './services/drone.service';
 import { MissionService } from './services/mission.service';
 import { SessionService } from './services/session.service';
@@ -64,8 +65,13 @@ import { UserService } from './services/user.service';
       provide: 'DroneService',
       useClass: DroneService,
     },
+    {
+      provide: 'CategoryService',
+      useClass: CategoryService,
+    },
   ],
   exports: [
+    'CategoryService',
     'SiteService',
     'MissionService',
     'UserService',

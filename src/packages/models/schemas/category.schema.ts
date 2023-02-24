@@ -8,6 +8,9 @@ export const CategorySchema = new Schema(
       required: true,
       unique: true,
     },
+    userId: {
+        type: Number,
+      },
     name: {
       type: String,
     },
