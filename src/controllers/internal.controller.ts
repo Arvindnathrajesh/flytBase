@@ -7,22 +7,21 @@ import { Site } from 'src/packages/types/dtos/site';
 @Controller({ path: '/internal' })
 export class InternalController {
   constructor(
-    @Inject('SiteService')
-    private siteService: SiteService,
+    @Inject('MissionService')
+    private missionService: MissionService,
     @Inject('DroneService')
     private droneService: DroneService,
   ) {}
 
-  @Post('/site/create')
-  public async getMissions(@Body() site: Site) {
-    return await this.siteService.createSite(site);
+  //request the server to retrieve all drones belonging to a particular site.
+  @Get('/drones-in-site')
+  public async getDronesInASite(@Query('site-id') siteId: string) {
+    return await this.droneService.getDronesInASite(siteId);
   }
 
-    //request the server to retrieve all drones belonging to a particular site.
-    @Get('/drones-in-site')
-    public async getDronesInASite(
-        @Query('site-id') siteId: string,
-    ) {
-        return await this.droneService.getDronesInASite(siteId);
-    }
+  //retrieve all missions belonging to a particular site.
+  @Get('/missions-in-site')
+  public async getMissionsInASite(@Query('site-id') siteId: string) {
+    return await this.missionService.getMissionsInASite(siteId);
+  }
 }

@@ -23,12 +23,9 @@ export class SiteController {
     private siteService: SiteService,
   ) {}
 
-  @Put('/assign-to-user')
-  public async siteAssignToUser(
-    @User('userId') userId: number,
-    @Query('site-id') siteId: string,
-  ) {
-    return await this.siteService.siteAssignToUser(siteId, userId);
+  @Post('/create')
+  public async createSite(@Body() site: Site, @User('userId') userId: number) {
+    return await this.siteService.createSite(site, userId);
   }
 
   @Put('/update')

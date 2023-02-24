@@ -53,7 +53,28 @@ export class SiteService {
     );
   }
 
-  async createSite(site: Site) {
-    return await this.siteModel.create(site);
+  async createSite(site: Site, userId) {
+    if (!site.siteId) {
+      throw new BadRequestException('SITE_ID_CANNOT_BE_EMPTY', {
+        cause: new Error(),
+        description: 'SITE_ID_CANNOT_BE_EMPTY',
+      });
+    }
+    const existingSite = await this.getSite(site.siteId);
+    if (existingSite) {
+      throw new BadRequestException('SITE_ALREADY_EXISTS', {
+        cause: new Error(),
+        description: 'SITE_ALREADY_EXISTS',
+      });
+    }
+
+    const newSite: Site = {
+      siteId: site.siteId,
+      userId: userId,
+      siteName: site.siteName || null,
+      position: site.position || null,
+      state: STATE.ACTIVE,
+    };
+    return await this.siteModel.create(newSite);
   }
 }

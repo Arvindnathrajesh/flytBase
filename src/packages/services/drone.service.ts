@@ -16,8 +16,8 @@ export class DroneService {
     private siteService: SiteService,
   ) {}
 
-  async getDrone(droneId:string) {
-    return await this.droneModel.findOne({droneId, state:STATE.ACTIVE});
+  async getDrone(droneId: string) {
+    return await this.droneModel.findOne({ droneId, state: STATE.ACTIVE });
   }
 
   async createDrone(drone: Drone, userId) {
@@ -96,33 +96,33 @@ export class DroneService {
     );
   }
 
-  async getDronesInASite(siteId){
-    return await this.droneModel.find({siteId, state:STATE.ACTIVE});
+  async getDronesInASite(siteId) {
+    return await this.droneModel.find({ siteId, state: STATE.ACTIVE });
   }
 
-  async updateDroneSite(siteId, droneId, userId){
-    const site = await this.siteService.getSite(siteId)
-    if(!site || site.userId!==userId){
-        throw new BadRequestException('SITE_DOES_NOT_EXIST', {
-            cause: new Error(),
-            description: 'SITE_DOES_NOT_EXIST',
-          });
+  async updateDroneSite(siteId, droneId, userId) {
+    const site = await this.siteService.getSite(siteId);
+    if (!site || site.userId !== userId) {
+      throw new BadRequestException('SITE_DOES_NOT_EXIST', {
+        cause: new Error(),
+        description: 'SITE_DOES_NOT_EXIST',
+      });
     }
     const drone = await this.getDrone(droneId);
-    if(!drone || drone.userId!==userId){
-        throw new BadRequestException('DRONE_DOES_NOT_EXIST', {
-            cause: new Error(),
-            description: 'DRONE_DOES_NOT_EXIST',
-          });
+    if (!drone || drone.userId !== userId) {
+      throw new BadRequestException('DRONE_DOES_NOT_EXIST', {
+        cause: new Error(),
+        description: 'DRONE_DOES_NOT_EXIST',
+      });
     }
     return await this.droneModel.findOneAndUpdate(
-        { droneId, userId },
-        {
-          $set: {
-            siteId: siteId,
-          },
+      { droneId, userId },
+      {
+        $set: {
+          siteId: siteId,
         },
-        { new: true },
-      );
+      },
+      { new: true },
+    );
   }
 }

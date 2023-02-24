@@ -12,7 +12,9 @@ export class CategoryService {
   ) {}
 
   async getCategory(categoryId) {
-    return await this.categoryModel.findOne({ categoryId, state:STATE.ACTIVE });
+    return await this.categoryModel.findOne({
+      categoryId,
+      state: STATE.ACTIVE,
+    });
   }
-
 }

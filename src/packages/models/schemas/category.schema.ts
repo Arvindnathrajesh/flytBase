@@ -9,8 +9,8 @@ export const CategorySchema = new Schema(
       unique: true,
     },
     userId: {
-        type: Number,
-      },
+      type: Number,
+    },
     name: {
       type: String,
     },

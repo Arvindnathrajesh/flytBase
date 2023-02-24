@@ -1,6 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { setObjProps } from '../common-utils/common-utils';
 import { MissionDocument } from '../models/documents/mission.document';
 import { Mission } from '../types/dtos/mission';
 import { STATE } from '../types/dtos/site';
@@ -19,12 +20,14 @@ export class MissionService {
   ) {}
 
   async getMission(missionId) {
-    return await this.missionModel.findOne({missionId,state:STATE.ACTIVE});
+    return await this.missionModel.findOne({ missionId, state: STATE.ACTIVE });
   }
 
-  async removeDrone(siteId){
-
+  async getMissionsInASite(siteId) {
+    return await this.missionModel.find({ siteId, state: STATE.ACTIVE });
   }
+
+  async removeDrone(siteId) {}
 
   async createMission(mission: Mission, userId) {
     const siteId = mission.siteId;
@@ -34,7 +37,9 @@ export class MissionService {
         description: 'ENTER_MISSION_ID',
       });
     }
-    const existingMission: MissionDocument = await this.getMission(mission.missionId);
+    const existingMission: MissionDocument = await this.getMission(
+      mission.missionId,
+    );
     if (existingMission) {
       throw new BadRequestException('Mission_ALREADY_EXISTS', {
         cause: new Error(),
@@ -57,15 +62,15 @@ export class MissionService {
     }
 
     const categoryId = mission.categoryId;
-    if(categoryId){
+    if (categoryId) {
       const category = await this.categoryService.getCategory(categoryId);
-      if(!category){
+      if (!category) {
         throw new BadRequestException('CATEGORY_DOES_NOT_EXIST', {
           cause: new Error(),
           description: 'CATEGORY_DOES_NOT_EXIST',
         });
       }
-      if(category.userId && category.userId!== userId){
+      if (category.userId && category.userId !== userId) {
         throw new BadRequestException('CATEGORY_DOES_NOT_BELONG_TO_USER', {
           cause: new Error(),
           description: 'CATEGORY_DOES_NOT_BELONG_TO_USER',
@@ -75,14 +80,59 @@ export class MissionService {
 
     const newMission: Mission = {
       missionId: mission.missionId,
-      alt: mission.alt||null,
+      alt: mission.alt || null,
       speed: mission.speed || null,
       name: mission.name || null,
       waypoints: mission.waypoints || null,
       siteId: mission.siteId,
-      categoryId: categoryId||null,
-      state: STATE.ACTIVE
+      categoryId: categoryId || null,
+      state: STATE.ACTIVE,
     };
     return await this.missionModel.create(newMission);
+  }
+
+  async updateMission(updatedMission: Mission, userId: number) {
+    const mission: MissionDocument = await this.getMission(
+      updatedMission.missionId,
+    );
+    if (!mission) {
+      throw new BadRequestException('MISSION_DOES_NOT_EXIST', {
+        cause: new Error(),
+        description: 'MISSION_DOES_NOT_EXIST',
+      });
+    }
+    const site = await this.siteService.getSite(mission.siteId);
+    if (!site || site.userId !== userId) {
+      throw new BadRequestException('SITE_DOES_NOT_EXIST', {
+        cause: new Error(),
+        description: 'SITE_DOES_NOT_EXIST',
+      });
+    }
+    const props: (keyof Mission)[] = ['alt', 'name', 'speed', 'waypoints'];
+    setObjProps(props, mission, updatedMission);
+    await mission.save();
+    return mission.toObject();
+  }
+
+  async deleteMission(missionId, userId) {
+    const mission = await this.getMission(missionId);
+    if (!mission) {
+      throw new BadRequestException('MISSION_DOES_NOT_EXIST', {
+        cause: new Error(),
+        description: 'MISSION_DOES_NOT_EXIST',
+      });
+    }
+    const site = await this.siteService.getSite(mission.siteId);
+    if (!site || site.userId !== userId) {
+      throw new BadRequestException('SITE_DOES_NOT_BELONG_TO_USER', {
+        cause: new Error(),
+        description: 'SITE_DOES_NOT_BELONG_TO_USER',
+      });
+    }
+    return await this.missionModel.findOneAndUpdate(
+      { missionId },
+      { $set: { state: STATE.INACTIVE } },
+      { new: true },
+    );
   }
 }

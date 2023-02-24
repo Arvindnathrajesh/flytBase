@@ -8,6 +8,7 @@ import { UserController } from './controllers/user.controller';
 import { InternalController } from './controllers/internal.controller';
 import { SiteController } from './controllers/site.controller';
 import { DroneController } from './controllers/drone.controller';
+import { CategoryController } from './controllers/category.controller';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { DroneController } from './controllers/drone.controller';
   controllers: [
     AppController,
     MissionV1Controller,
+    CategoryController,
     UserController,
     InternalController,
     SiteController,
