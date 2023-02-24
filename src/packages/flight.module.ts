@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CategoryCollection, CategorySchema } from './models/schemas/category.schema';
+import {
+  CategoryCollection,
+  CategorySchema,
+} from './models/schemas/category.schema';
 import { DroneCollection, DroneSchema } from './models/schemas/drone.schema';
 import {
   MissionCollection,
