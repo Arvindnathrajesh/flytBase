@@ -1,3 +1,5 @@
+import { STATE } from './site';
+
 export class Waypoint {
   alt: number;
   lat: number;
@@ -9,4 +11,8 @@ export class Mission {
   speed: number;
   name: string;
   waypoints: [Waypoint];
+  siteId: string;
+  droneId: string;
+  categoryId: string;
+  state: STATE;
 }

@@ -1,25 +1,28 @@
 import { Schema } from 'mongoose';
 import { STATE } from 'src/packages/types/dtos/site';
-export const SiteSchema = new Schema(
+
+export const DroneSchema = new Schema(
   {
+    droneId: {
+      type: String,
+    },
     siteId: {
       type: String,
-      required: true,
     },
-    userId: {
+    deletedBy: {
       type: Number,
     },
-    siteName: {
+    deletedOn: {
+      type: Date,
+    },
+    droneType: {
       type: String,
     },
-    position: {
-      _id: false,
-      latitude: {
-        type: Number,
-      },
-      longitude: {
-        type: Number,
-      },
+    makeName: {
+      type: String,
+    },
+    name: {
+      type: String,
     },
     state: {
       type: String,
@@ -31,4 +34,4 @@ export const SiteSchema = new Schema(
   },
 );
 
-export const SiteCollection = 'site';
+export const DroneCollection = 'drone';

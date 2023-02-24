@@ -16,7 +16,7 @@ export class UserService {
   ) {}
 
   async getUser(userId) {
-    return await this.userDataModel.findOne({userId});
+    return await this.userDataModel.findOne({ userId });
   }
 
   async emailSignUp(emailSignUpRequest: {
@@ -28,7 +28,10 @@ export class UserService {
       emailAddresses.parseOneAddress(emailSignUpRequest.emailId)
     );
     if (_.isNil(emailParsed)) {
-        throw new BadRequestException('INVALID_EMAIL_ID', { cause: new Error(), description: 'Email is not Valid' })
+      throw new BadRequestException('INVALID_EMAIL_ID', {
+        cause: new Error(),
+        description: 'Email is not Valid',
+      });
     }
     const emailId = emailParsed.address;
     const password = emailSignUpRequest.password;
@@ -40,7 +43,10 @@ export class UserService {
     });
 
     if (existingUserData) {
-        throw new BadRequestException('EMAIL_ID_ALREADY_EXISTS', { cause: new Error(), description: 'Email already exists' })
+      throw new BadRequestException('EMAIL_ID_ALREADY_EXISTS', {
+        cause: new Error(),
+        description: 'Email already exists',
+      });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -50,7 +56,7 @@ export class UserService {
       emailId: emailId,
       hashedPassword: hashedPassword,
       status: USER_STATUS.ACTIVE,
-      firstName:firstName,
+      firstName: firstName,
     };
     return await this.userDataModel.create(userData);
   }
@@ -60,7 +66,10 @@ export class UserService {
       emailAddresses.parseOneAddress(emailLoginRequest.emailId)
     );
     if (_.isNil(emailParsed)) {
-        throw new BadRequestException('INVALID_EMAIL_ID', { cause: new Error(), description: 'Email is not Valid' })
+      throw new BadRequestException('INVALID_EMAIL_ID', {
+        cause: new Error(),
+        description: 'Email is not Valid',
+      });
     }
     const emailId = emailParsed.address;
     const user = await this.userDataModel.findOne({
@@ -68,10 +77,16 @@ export class UserService {
       status: USER_STATUS.ACTIVE,
     });
     if (!user) {
-        throw new BadRequestException('USER_DATA_NOT_FOUND', { cause: new Error(), description: 'User Data not found' })
+      throw new BadRequestException('USER_DATA_NOT_FOUND', {
+        cause: new Error(),
+        description: 'User Data not found',
+      });
     }
     if (_.isEmpty(user.hashedPassword)) {
-        throw new BadRequestException('EMAIL_LOGIN_ABSENT', { cause: new Error(), description: 'email login is not found' })
+      throw new BadRequestException('EMAIL_LOGIN_ABSENT', {
+        cause: new Error(),
+        description: 'email login is not found',
+      });
     }
 
     const isMatch = await bcrypt.compare(
@@ -80,7 +95,10 @@ export class UserService {
     );
 
     if (!isMatch) {
-        throw new BadRequestException('CREDENTIALS_DOES_NOT_MATCH', { cause: new Error(), description: 'Credentials are not matching' })
+      throw new BadRequestException('CREDENTIALS_DOES_NOT_MATCH', {
+        cause: new Error(),
+        description: 'Credentials are not matching',
+      });
     }
     return user;
   }

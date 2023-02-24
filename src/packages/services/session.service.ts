@@ -1,14 +1,11 @@
 import * as jwt from 'jsonwebtoken';
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtPayload } from 'jsonwebtoken';
-import { ApiConfig, SessionPayload } from '../types/dtos/user';
+import { SessionPayload } from '../types/dtos/user';
 
 @Injectable()
 export class SessionService {
   public readonly verifyLoginMiddleware;
-
-  constructor(
-  ) {}
 
   async createJwtSession(sessionPayload: SessionPayload): Promise<string> {
     return SessionService.signJWT(
@@ -24,9 +21,15 @@ export class SessionService {
     } catch (err) {
       switch (err.name) {
         case 'TokenExpiredError':
-            throw new BadRequestException('TOKEN_EXPIRED', { cause: new Error(), description: 'Token Expired' })
+          throw new BadRequestException('TOKEN_EXPIRED', {
+            cause: new Error(),
+            description: 'Token Expired',
+          });
         case 'JsonWebTokenError':
-            throw new BadRequestException('INVALID_TOKEN', { cause: new Error(), description: 'Invalid Token' })
+          throw new BadRequestException('INVALID_TOKEN', {
+            cause: new Error(),
+            description: 'Invalid Token',
+          });
         default:
           throw err;
       }
@@ -34,11 +37,7 @@ export class SessionService {
     return decoded as T;
   }
 
-  public static signJWT<T>(
-    payload: any | T,
-    secretToken: string,
-  ): string {
+  public static signJWT<T>(payload: any | T, secretToken: string): string {
     return jwt.sign(payload, secretToken);
   }
-
 }

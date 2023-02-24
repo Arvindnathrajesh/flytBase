@@ -8,33 +8,32 @@ export enum USER_STATUS {
 }
 
 export interface UserRequest extends Request {
-    user: {
-      userId: number;
-    };
-  }
-  
-  export interface SessionPayload {
-    user: {
-      userId: number;
-    };
-  }
+  user: {
+    userId: number;
+  };
+}
+
+export interface SessionPayload {
+  user: {
+    userId: number;
+  };
+}
 
 export interface ApiConfig {
-    jwtExpiry: number;
-    websiteUrl: string;
+  jwtExpiry: number;
+  websiteUrl: string;
 }
 
 export class UserToken {
-    userId: number;
-    token: string;
-    emailLoginMethod: boolean;
+  userId: number;
+  token: string;
+  emailLoginMethod: boolean;
 }
 
 export class EmailLogin {
-    emailId: string;
-    password: string;
+  emailId: string;
+  password: string;
 }
-
 
 export class UserData {
   userId: number;
