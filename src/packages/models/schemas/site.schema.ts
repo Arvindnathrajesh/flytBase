@@ -5,6 +5,7 @@ export const SiteSchema = new Schema(
     siteId: {
       type: String,
       required: true,
+      unique: true,
     },
     userId: {
       type: Number,

@@ -5,6 +5,8 @@ export const MissionSchema = new Schema(
   {
     missionId: {
       type: String,
+      required: true,
+      unique: true,
     },
     alt: {
       type: Number,

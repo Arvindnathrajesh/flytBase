@@ -1,29 +1,20 @@
 import { Schema } from 'mongoose';
 import { STATE } from 'src/packages/types/dtos/site';
 
-export const DroneSchema = new Schema(
+export const CategorySchema = new Schema(
   {
-    droneId: {
+    categoryId: {
       type: String,
       required: true,
       unique: true,
     },
-    siteId: {
-      type: String,
-    },
-    deletedBy: {
-      type: Number,
-    },
-    deletedOn: {
-      type: Date,
-    },
-    droneType: {
-      type: String,
-    },
-    makeName: {
-      type: String,
-    },
     name: {
+      type: String,
+    },
+    color: {
+      type: String,
+    },
+    tagName: {
       type: String,
     },
     state: {
@@ -36,4 +27,4 @@ export const DroneSchema = new Schema(
   },
 );
 
-export const DroneCollection = 'drone';
+export const CategoryCollection = 'category';

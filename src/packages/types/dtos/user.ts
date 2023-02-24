@@ -19,11 +19,6 @@ export interface SessionPayload {
   };
 }
 
-export interface ApiConfig {
-  jwtExpiry: number;
-  websiteUrl: string;
-}
-
 export class UserToken {
   userId: number;
   token: string;
