@@ -6,6 +6,7 @@ import { MissionDocument } from '../models/documents/mission.document';
 import { Mission } from '../types/dtos/mission';
 import { STATE } from '../types/dtos/site';
 import { CategoryService } from './category.service';
+import { DroneService } from './drone.service';
 import { SiteService } from './site.service';
 
 @Injectable()
@@ -17,6 +18,8 @@ export class MissionService {
     private siteService: SiteService,
     @Inject('CategoryService')
     private categoryService: CategoryService,
+    @Inject('DroneService')
+    private droneService: DroneService,
   ) {}
 
   async getMission(missionId) {
@@ -24,10 +27,77 @@ export class MissionService {
   }
 
   async getMissionsInASite(siteId) {
-    return await this.missionModel.find({ siteId, state: STATE.ACTIVE });
+    if (siteId) {
+      return await this.missionModel.find({ siteId, state: STATE.ACTIVE });
+    }
+    return null;
   }
 
-  async removeDrone(siteId) {}
+  async getMissionsInACategory(categoryId) {
+    if (categoryId) {
+      return await this.missionModel.find({ categoryId, state: STATE.ACTIVE });
+    }
+    return null;
+  }
+
+  async getDronesInACategory(categoryId) {
+    const missions: Mission[] = await this.missionModel.find({
+      categoryId,
+      state: STATE.ACTIVE,
+    });
+    const droneIds = missions.map((m) => m.droneId);
+    const drones = await this.droneService.getDrones(droneIds);
+    return drones;
+  }
+
+  async deleteMissionsAndSite(siteId, userId) {
+    const site = await this.siteService.getSite(siteId);
+    if (!site || site.userId !== userId) {
+      throw new BadRequestException('SITE_DOES_NOT_EXIST', {
+        cause: new Error(),
+        description: 'SITE_DOES_NOT_EXIST',
+      });
+    }
+    await this.missionModel.updateMany(
+      { siteId },
+      { $set: { state: STATE.INACTIVE } },
+    );
+    return await this.siteService.deleteSite(siteId, userId);
+  }
+
+  async updateDroneSiteAndRemoveMissionDrone(siteId, droneId, userId) {
+    const drone = await this.droneService.updateDroneSite(
+      siteId,
+      droneId,
+      userId,
+    );
+    const missions = await this.missionModel.updateMany(
+      { droneId, state: STATE.ACTIVE },
+      { $set: { droneId: null } },
+    );
+    return { drone, missions };
+  }
+
+  async deleteDroneAndRemoveMissionDrone(droneId, userId) {
+    const drone = await this.droneService.deleteDrone(droneId, userId);
+    const missions = await this.missionModel.updateMany(
+      { droneId, state: STATE.ACTIVE },
+      { $set: { droneId: null } },
+    );
+    return { drone, missions };
+  }
+
+  async deleteCategoryAndRemoveMissionCategory(categoryId, userId) {
+    const category = await this.categoryService.deleteCategory(
+      categoryId,
+      userId,
+    );
+    const missions = await this.missionModel.updateMany(
+      { categoryId, state: STATE.ACTIVE },
+      { $set: { categoryId: null } },
+    );
+    return { category, missions };
+  }
 
   async createMission(mission: Mission, userId) {
     const siteId = mission.siteId;
@@ -78,6 +148,17 @@ export class MissionService {
       }
     }
 
+    const droneId = mission.droneId;
+    if (droneId) {
+      const drone = await this.droneService.getDrone(droneId);
+      if (!drone || drone.siteId !== siteId) {
+        throw new BadRequestException('DRONE_DOES_NOT_EXIST', {
+          cause: new Error(),
+          description: 'DRONE_DOES_NOT_EXIST',
+        });
+      }
+    }
+
     const newMission: Mission = {
       missionId: mission.missionId,
       alt: mission.alt || null,
@@ -87,6 +168,7 @@ export class MissionService {
       siteId: mission.siteId,
       categoryId: categoryId || null,
       state: STATE.ACTIVE,
+      droneId: mission.droneId || null,
     };
     return await this.missionModel.create(newMission);
   }
@@ -132,6 +214,39 @@ export class MissionService {
     return await this.missionModel.findOneAndUpdate(
       { missionId },
       { $set: { state: STATE.INACTIVE } },
+      { new: true },
+    );
+  }
+
+  async updateMissionCategory(missionId, categoryId, userId) {
+    const category = await this.categoryService.getCategory(categoryId);
+    if (!category || (category.userId !== null && category.userId !== userId)) {
+      throw new BadRequestException('CATEGORY_DOES_NOT_EXIST', {
+        cause: new Error(),
+        description: 'CATEGORY_DOES_NOT_EXIST',
+      });
+    }
+    const mission = await this.getMission(missionId);
+    if (!mission) {
+      throw new BadRequestException('MISSION_DOES_NOT_EXIST', {
+        cause: new Error(),
+        description: 'MISSION_DOES_NOT_EXIST',
+      });
+    }
+    const site = await this.siteService.getSite(mission.siteId);
+    if (!site || site.userId !== userId) {
+      throw new BadRequestException('SITE_DOES_NOT_EXIST', {
+        cause: new Error(),
+        description: 'SITE_DOES_NOT_EXIST',
+      });
+    }
+    return await this.missionModel.findOneAndUpdate(
+      { missionId },
+      {
+        $set: {
+          categoryId: categoryId,
+        },
+      },
       { new: true },
     );
   }

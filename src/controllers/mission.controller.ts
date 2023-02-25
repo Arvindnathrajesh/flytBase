@@ -44,4 +44,18 @@ export class MissionV1Controller {
   ) {
     return await this.missionService.deleteMission(missionId, userId);
   }
+
+  // Adding category to mission
+  @Put('/category/add')
+  public async updateMissionCategory(
+    @User('userId') userId: number,
+    @Query('mission-id') missionId: string,
+    @Query('category-id') categoryId: string,
+  ) {
+    return await this.missionService.updateMissionCategory(
+      missionId,
+      categoryId,
+      userId,
+    );
+  }
 }

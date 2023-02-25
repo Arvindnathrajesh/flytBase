@@ -20,6 +20,8 @@ export class DroneController {
   constructor(
     @Inject('DroneService')
     private droneService: DroneService,
+    @Inject('MissionService')
+    private missionService: MissionService,
   ) {}
 
   @Post('/create')
@@ -39,20 +41,27 @@ export class DroneController {
   }
 
   @Put('/delete')
-  public async deleteDrone(
+  public async deleteDroneAndRemoveMissionDrone(
     @User('userId') userId: number,
     @Query('drone-id') droneId: string,
   ) {
-    return await this.droneService.deleteDrone(droneId, userId);
+    return await this.missionService.deleteDroneAndRemoveMissionDrone(
+      droneId,
+      userId,
+    );
   }
 
   //The ability for a user to shift drones from one site to another.
   @Put('/site/shift')
-  public async updateDroneSite(
+  public async updateDroneSiteAndRemoveMissionDrone(
     @User('userId') userId: number,
     @Query('drone-id') droneId: string,
     @Query('site-id') siteId: string,
   ) {
-    return await this.droneService.updateDroneSite(siteId, droneId, userId);
+    return await this.missionService.updateDroneSiteAndRemoveMissionDrone(
+      siteId,
+      droneId,
+      userId,
+    );
   }
 }

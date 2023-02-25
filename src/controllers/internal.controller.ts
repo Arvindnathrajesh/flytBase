@@ -24,4 +24,18 @@ export class InternalController {
   public async getMissionsInASite(@Query('site-id') siteId: string) {
     return await this.missionService.getMissionsInASite(siteId);
   }
+
+  //retrieve all missions belonging to a particular category.
+  @Get('/missions-in-a-category')
+  public async getMissionsInACategory(
+    @Query('category-id') categoryId: string,
+  ) {
+    return await this.missionService.getMissionsInACategory(categoryId);
+  }
+
+  //retrieve all drones belonging to a particular category.
+  @Get('/missions-in-a-category')
+  public async getDronesInACategory(@Query('category-id') categoryId: string) {
+    return await this.missionService.getDronesInACategory(categoryId);
+  }
 }

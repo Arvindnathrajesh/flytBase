@@ -20,6 +20,13 @@ export class DroneService {
     return await this.droneModel.findOne({ droneId, state: STATE.ACTIVE });
   }
 
+  async getDrones(droneIds: string[]) {
+    return await this.droneModel.find({
+      state: STATE.ACTIVE,
+      droneId: { $in: droneIds },
+    });
+  }
+
   async createDrone(drone: Drone, userId) {
     const siteId = drone.siteId;
     if (!drone.droneId) {
@@ -83,6 +90,13 @@ export class DroneService {
   }
 
   async deleteDrone(droneId, userId) {
+    const drone = await this.getDrone(droneId);
+    if (!drone || drone.userId !== userId) {
+      throw new BadRequestException('DRONE_DOES_NOT_EXIST', {
+        cause: new Error(),
+        description: 'DRONE_DOES_NOT_EXIST',
+      });
+    }
     return await this.droneModel.findOneAndUpdate(
       { droneId, userId },
       {

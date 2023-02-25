@@ -12,7 +12,7 @@ export class Mission {
   name: string;
   waypoints: [Waypoint];
   siteId: string;
-  // droneId: string;
+  droneId: string;
   categoryId: string;
   state: STATE;
 }

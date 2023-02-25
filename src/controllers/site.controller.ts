@@ -21,6 +21,8 @@ export class SiteController {
   constructor(
     @Inject('SiteService')
     private siteService: SiteService,
+    @Inject('MissionService')
+    private missionService: MissionService,
   ) {}
 
   @Post('/create')
@@ -42,6 +44,6 @@ export class SiteController {
     @User('userId') userId: number,
     @Query('site-id') siteId: string,
   ) {
-    return await this.siteService.deleteSite(siteId, userId);
+    return await this.missionService.deleteMissionsAndSite(siteId, userId);
   }
 }
