@@ -7,7 +7,47 @@
 
 ## Description
 
-FlytBase Assignment 
+FlytBase Assignment :
+
+This Application is built on NestJS framework and MongoDB database.
+
+I have created 5 mongo collections with its major fields:
+
+User {
+  userId: number;
+...
+}
+
+Site {
+  siteId: string;
+  userId: number;
+  ...
+}
+
+Mission {
+  missionId: string;
+  siteId: string;
+  droneId: string;
+  categoryId: string;
+  ...
+}
+
+Drone {
+  droneId: string;
+  siteId: string;
+  userId: number;
+  ...
+}
+
+Category {
+  categoryId: string;
+  userId?: number;
+  ...
+}
+
+This shows how I have designed the schema for collections to connect each other. 
+I have created a postman collection which includes all the APIs and the API names are self explanatory. 
+
 
 ## Installation
 
@@ -23,10 +63,6 @@ $ npm run start:dev
 # debug mode
 $ npm run start:debug
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
 ## Stay in touch
 - Author - [Arvind Nath Rajesh](https://arvindnathr@gmail.com)
