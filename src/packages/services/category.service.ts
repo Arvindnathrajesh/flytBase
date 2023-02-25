@@ -41,6 +41,7 @@ export class CategoryService {
       name: category.name,
       color: category.color,
       tagName: category.tagName,
+      state: STATE.ACTIVE,
     };
     return await this.categoryModel.create(newCategory);
   }

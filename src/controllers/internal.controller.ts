@@ -34,7 +34,7 @@ export class InternalController {
   }
 
   //retrieve all drones belonging to a particular category.
-  @Get('/missions-in-a-category')
+  @Get('/drones-in-a-category')
   public async getDronesInACategory(@Query('category-id') categoryId: string) {
     return await this.missionService.getDronesInACategory(categoryId);
   }

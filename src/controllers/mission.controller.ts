@@ -58,4 +58,18 @@ export class MissionV1Controller {
       userId,
     );
   }
+
+  //Add drone to a mission
+  @Put('/drone/add')
+  public async updateMissionDrone(
+    @User('userId') userId: number,
+    @Query('drone-id') droneId: string,
+    @Query('mission-id') missionId: string,
+  ) {
+    return await this.missionService.updateMissionDrone(
+      missionId,
+      droneId,
+      userId,
+    );
+  }
 }

@@ -250,4 +250,39 @@ export class MissionService {
       { new: true },
     );
   }
+
+  async updateMissionDrone(missionId, droneId, userId) {
+    const mission = await this.getMission(missionId);
+    if (!mission) {
+      throw new BadRequestException('MISSION_DOES_NOT_EXIST', {
+        cause: new Error(),
+        description: 'MISSION_DOES_NOT_EXIST',
+      });
+    }
+    const site = await this.siteService.getSite(mission.siteId);
+    if (!site || site.userId !== userId) {
+      throw new BadRequestException('SITE_DOES_NOT_EXIST', {
+        cause: new Error(),
+        description: 'SITE_DOES_NOT_EXIST',
+      });
+    }
+
+    const drone = await this.droneService.getDrone(droneId);
+    if (!drone || drone.siteId !== mission.siteId || drone.userId !== userId) {
+      throw new BadRequestException('DRONE_DOES_NOT_EXIST', {
+        cause: new Error(),
+        description: 'DRONE_DOES_NOT_EXIST',
+      });
+    }
+
+    return await this.missionModel.findOneAndUpdate(
+      { missionId },
+      {
+        $set: {
+          droneId: droneId,
+        },
+      },
+      { new: true },
+    );
+  }
 }
